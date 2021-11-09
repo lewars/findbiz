@@ -4,8 +4,9 @@ import sys
 import pprint
 import csv
 import googlemaps
+from yaml import load
+from yaml import CLoader as Loader
 
-key="INSERT_API_KEY_HERE"
 fields = ['formatted_address', 'formatted_phone_number', 'url', 'website', 'rating']
 rows = []
 
@@ -38,12 +39,16 @@ def get_csv_row(details, company_name, user_ratings_total=0):
 if __name__ == '__main__':
     keyword = sys.argv[1]
     token = None
-    client = googlemaps.Client(key)
+
+    with open('config.yaml') as f:
+        data = load(f, Loader=Loader)
+
+    client = googlemaps.Client(data['key'])
 
     for c in range(0,4):
         if token is None:
             results = client.places_nearby(
-                location=(40.722471,-74.271519),
+                location=data['location'],
                 radius=16186,
                 keyword=keyword,
                 language="en",
