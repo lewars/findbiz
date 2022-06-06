@@ -62,7 +62,6 @@ if __name__ == "__main__":
         else:
             try:
                 results = client.places_nearby(page_token=token)
-                # pprint.pprint(results)
             except googlemaps.exceptions.ApiError:
                 break
 
