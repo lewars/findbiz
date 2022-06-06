@@ -4,7 +4,7 @@
 
 Here are the steps to quickly set up `findbiz` and run it successfully.
 
-```
+```sh
 make build
 cat << EOF > config.yml
 ---
