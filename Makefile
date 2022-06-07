@@ -20,6 +20,4 @@ build: venv
 	pip install --verbose -r requirements.txt
 
 clean:
-	rm -vfr venv-findbiz
-
-
+	rm -vfr $(VENV_DIR)
