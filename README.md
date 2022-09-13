@@ -14,5 +14,5 @@ location:
 key: Insert_Your_API_Key_Here
 EOF
 python ./findbiz.py 'general contractor'
-cat bizz.csv # or import to Google Sheets
+cat bizz.csv # or import to Google Sheets, using '|' as delimiter
 ```

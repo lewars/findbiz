@@ -2,7 +2,6 @@
 # https://developers.google.com/places/web-service/search#PlaceSearchRequests
 
 import sys
-import pprint
 import csv
 import googlemaps
 from yaml import load
