@@ -54,7 +54,7 @@ if __name__ == "__main__":
             results = client.places_nearby(
                 location=data["location"],
                 radius=16186,
-                keyword=keyword,
+                keyword=f"{keyword}",
                 language="en",
                 open_now=False,
             )
