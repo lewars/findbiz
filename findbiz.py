@@ -1,20 +1,26 @@
 #!/usr/bin/env python
-# https://developers.google.com/places/web-service/search#PlaceSearchRequests
+"""
+findbiz.py - Find businesses using Google Places API
+https://developers.google.com/places/web-service/search#PlaceSearchRequests
+"""
 
 import sys
 import csv
-import googlemaps
+from googlemaps import Client
+from googlemaps import exceptions as googlemaps_exceptions
 from yaml import load
 from yaml import CLoader as Loader
 
-fields = ["formatted_address", "formatted_phone_number", "url", "website", "rating"]
+fields = ["formatted_address", "formatted_phone_number", "url",
+          "website", "rating"]
 rows = []
 
 
-def get_csv_row(details, company_name, user_ratings_total=0):
+def get_csv_row(detail_r, company_name, user_ratings_total=0):
+    """Get a row of data for the CSV file"""
+    result = detail_r["result"]
 
-    result = details["result"]
-
+    # foobar this is a comment
     if "formatted_phone_number" not in result:
         result["formatted_phone_number"] = ""
 
@@ -41,38 +47,40 @@ def get_csv_row(details, company_name, user_ratings_total=0):
 
 
 if __name__ == "__main__":
-    keyword = sys.argv[1]
-    token = None
+    KEYWORD = sys.argv[1]
+    TOKEN = None
 
-    with open("config.yaml") as f:
+    with open("config.yaml", encoding="utf8") as f:
         data = load(f, Loader=Loader)
 
-    client = googlemaps.Client(data["key"])
+    client = Client(data["key"])
 
     for c in range(0, 4):
-        if token is None:
+        if TOKEN is None:
             results = client.places_nearby(
                 location=data["location"],
                 radius=16186,
-                keyword=f"{keyword}",
+                keyword=f"{KEYWORD}",
                 language="en",
                 open_now=False,
             )
         else:
             try:
-                results = client.places_nearby(page_token=token)
-            except googlemaps.exceptions.ApiError:
+                results = client.places_nearby(page_token=TOKEN)
+            except googlemaps_exceptions.ApiError:
                 break
 
         for r in results["results"]:
             details = client.place(r["place_id"], fields=fields, language="en")
-            rows.append(get_csv_row(details, r["name"], r["user_ratings_total"]))
+
+            rows.append(get_csv_row(details, r["name"],
+                                    r["user_ratings_total"]))
 
         if "next_page_token" in results and c != 3:
             token = results["next_page_token"]
         else:
             break
 
-    with open("bizz.csv", "w", newline="") as f:
+    with open("bizz.csv", "w", newline="", encoding="utf8") as f:
         writer = csv.writer(f, delimiter="|", quotechar="|")
         writer.writerows(rows)
